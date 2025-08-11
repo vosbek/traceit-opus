@@ -1,0 +1,30 @@
+<div class="card">
+  <div class="row" style="margin-bottom:8px;">
+    <input class="input" [(ngModel)]="query" placeholder="Ask a question… e.g., Where does &quot;Specified Amount&quot; come from?" />
+    <button class="btn" [disabled]="loading" (click)="ask()">{{ loading ? 'Asking…' : 'Ask' }}</button>
+  </div>
+  <div class="row small">
+    <label>Mode:&nbsp;
+      <select [(ngModel)]="mode" class="input" style="max-width:220px;">
+        <option value="default">Default</option>
+        <option value="high_precision">High precision</option>
+        <option value="deep_search">Deep search</option>
+      </select>
+    </label>
+  </div>
+  <div class="small" *ngIf="error" style="color:#fca5a5; margin-top:8px;">{{error}}</div>
+</div>
+
+<div class="card" *ngIf="resp" style="margin-top:16px;">
+  <h3>Answer</h3>
+  <pre>{{ resp.final_answer }}</pre>
+  <h3 style="margin-top:16px;">Citations</h3>
+  <div *ngFor="let c of resp.citations" class="cite">{{ citeLabel(c) }}</div>
+  <div style="margin-top:16px;" class="row">
+    <button class="btn" (click)="downloadJSON()">Download JSON</button>
+  </div>
+  <div style="margin-top:16px;">
+    <h3>Flow Graph</h3>
+    <div id="cy"></div>
+  </div>
+</div>

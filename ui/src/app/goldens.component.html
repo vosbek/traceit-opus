@@ -1,0 +1,52 @@
+<div class="card">
+  <h3 style="margin-top:0">Golden Questions</h3>
+  <div class="row" style="margin-bottom:8px; gap:8px;">
+    <input class="input" [(ngModel)]="newId" placeholder="ID (e.g., Q7_kyc_enforcement)" style="max-width:280px;" />
+    <input class="input" [(ngModel)]="newQuery" placeholder="Question text…" />
+    <button class="btn" (click)="add()">Add</button>
+  </div>
+  <div class="row small" style="gap:8px;">
+    <input type="file" (change)="onFile($event)" accept=".json,.jsonl,.txt" />
+    <button class="btn" (click)="download()">Download Set</button>
+    <span class="small" style="color:#fca5a5" *ngIf="fileError">{{fileError}}</span>
+  </div>
+  <div class="row" style="margin-top:12px;">
+    <button class="btn" [disabled]="loading || items.length===0" (click)="runAll()">{{ loading ? 'Running…' : 'Run All' }}</button>
+  </div>
+</div>
+
+<div class="card" style="margin-top:16px;">
+  <table style="width:100%; border-collapse: collapse;">
+    <thead>
+      <tr class="small" style="text-align:left; color:#9aa4b2;">
+        <th style="padding:6px 8px;">ID</th>
+        <th style="padding:6px 8px;">Query</th>
+        <th style="padding:6px 8px;">ms</th>
+        <th style="padding:6px 8px;">Exact</th>
+        <th style="padding:6px 8px;">Citations</th>
+        <th style="padding:6px 8px;">Grounded</th>
+        <th style="padding:6px 8px;">PASS</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let it of items" [style.opacity]="it.running ? 0.6 : 1" style="border-top:1px solid #1f2937;">
+        <td style="padding:6px 8px; white-space:nowrap;" class="small">{{it.id}}</td>
+        <td style="padding:6px 8px;">
+          <div class="small" style="margin-bottom:6px;">{{it.query}}</div>
+          <div *ngIf="it.resp">
+            <div class="small" style="margin:6px 0; color:#9aa4b2">Answer</div>
+            <pre style="max-height:120px; overflow:auto;">{{it.resp.final_answer}}</pre>
+            <div class="small" style="margin:6px 0; color:#9aa4b2">Citations</div>
+            <div *ngFor="let c of it.resp.citations" class="cite">{{c.type.toUpperCase()}} — {{c.repo ? (c.repo + ':') : ''}}{{c.path}} {{c.source_env ? ('['+c.source_env+']') : ''}}</div>
+          </div>
+          <div *ngIf="it.error" class="small" style="color:#fca5a5;">{{it.error}}</div>
+        </td>
+        <td class="small" style="padding:6px 8px;">{{it.ms || ''}}</td>
+        <td class="small" style="padding:6px 8px;">{{it.exact?.toFixed(2) || ''}}</td>
+        <td class="small" style="padding:6px 8px;">{{(it.cits_ok===true ? 'ok' : it.cits_ok===false ? 'fail' : '')}}</td>
+        <td class="small" style="padding:6px 8px;">{{it.grounded?.toFixed(2) || ''}}</td>
+        <td class="small" style="padding:6px 8px; font-weight:600; color: {{it.pass ? '#34d399' : '#fca5a5'}};">{{it.pass ? 'pass' : (it.pass===false ? 'fail' : '')}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

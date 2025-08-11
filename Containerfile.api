@@ -1,0 +1,29 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+ENV PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1
+
+# System deps (curl, build tools if needed)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc curl git && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt /app/requirements.txt
+RUN pip install -r requirements.txt && \
+    pip install git+https://github.com/strands-agents/sdk-python@main
+
+# App code
+COPY api /app/api
+COPY retrievers /app/retrievers
+COPY indexers /app/indexers
+COPY orchestrators /app/orchestrators
+COPY tools /app/tools
+COPY eval /app/eval
+COPY config /app/config
+COPY setup_mvp.py /app/setup_mvp.py
+
+# Make setup script executable
+RUN chmod +x /app/setup_mvp.py
+
+EXPOSE 8000
+CMD ["uvicorn", "api.strands_app:app", "--host", "0.0.0.0", "--port", "8000"]

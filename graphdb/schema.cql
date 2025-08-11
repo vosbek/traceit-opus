@@ -1,0 +1,8 @@
+// Constraints & Indexes
+CREATE CONSTRAINT IF NOT EXISTS FOR (a:Artifact) REQUIRE a.id IS UNIQUE;
+CREATE INDEX IF NOT EXISTS FOR (f:File) ON (f.path);
+CREATE INDEX IF NOT EXISTS FOR (v:JSPView) ON (v.path);
+CREATE INDEX IF NOT EXISTS FOR (s:StrutsAction) ON (s.name);
+CREATE INDEX IF NOT EXISTS FOR (t:Table) ON (t.name);
+CREATE INDEX IF NOT EXISTS FOR (p:Procedure) ON (p.name);
+CREATE INDEX IF NOT EXISTS FOR (tr:Trigger) ON (tr.name);
